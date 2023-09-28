@@ -12,6 +12,7 @@
 //===----------------------------------------------------------------------===//
 
 import ArgumentParser
+import ChinchillaCTLCore
 
 @main
 struct ChinchillaCTL: AsyncParsableCommand {
@@ -19,13 +20,13 @@ struct ChinchillaCTL: AsyncParsableCommand {
         commandName: "chinchilla",
         abstract: "A plain SQL-file based database migration toolkit.",
         discussion: """
-        chinchilla is an SQL database migration tool. Use it to generate SQL migration files \
+        Chinchilla is an SQL database migration tool. Use it to generate SQL migration files \
         and apply/roll-back your migrations.
 
         Chinchilla may also be used as a library to embed performing migrations into your Swift projects. \
         Check out https://github.com/slashmo/chinchilla to learn more.
         """,
-        version: "0.1.0",
+        version: chinchillaVersion ?? "unknown",
         subcommands: []
     )
 }
