@@ -22,8 +22,6 @@
 //
 
 import Foundation
-import SwiftSyntax
-import SwiftSyntaxBuilder
 
 // Resolve arguments to the tool.
 let repoPath = CommandLine.arguments[1]
@@ -93,23 +91,23 @@ let gitHasUncommittedChanges = _runGit(passing: "status", "-s", readingUpToCount
 // use the tag.
 // Otherwise, use the commit hash (with a "there are changes" marker if needed.)
 // Finally, fall back to nil if nothing else is available.
-let sourceCode: DeclSyntax = if !gitHasUncommittedChanges, let currentGitTag {
+let sourceCode: String = if !gitHasUncommittedChanges, let currentGitTag {
     """
     var _chinchillaVersion: String? {
-        \(literal: currentGitTag)
+        \(currentGitTag)
     }
     """
 } else if let currentGitCommitHash {
     if gitHasUncommittedChanges {
         """
         var _chinchillaVersion: String? {
-            \(literal: currentGitCommitHash) + " (modified)"
+            "\(currentGitCommitHash)" + " (modified)"
         }
         """
     } else {
         """
         var _chinchillaVersion: String? {
-            \(literal: currentGitCommitHash)
+            "\(currentGitCommitHash)"
         }
         """
     }

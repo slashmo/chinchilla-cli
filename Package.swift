@@ -11,7 +11,6 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.0.0"),
-        .package(url: "https://github.com/apple/swift-syntax.git", from: "509.0.0"),
     ],
     targets: [
         .executableTarget(
@@ -38,12 +37,6 @@ let package = Package(
             capability: .buildTool,
             dependencies: ["GitStatus"]
         ),
-        .executableTarget(
-            name: "GitStatus",
-            dependencies: [
-                .product(name: "SwiftSyntax", package: "swift-syntax"),
-                .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
-            ]
-        ),
+        .executableTarget(name: "GitStatus"),
     ]
 )
