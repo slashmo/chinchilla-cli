@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "chinchilla",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/slashmo/chinchilla.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "e4d403f51e8f1b64c0688e3f8bc90ccc8a86aae3"
+      }
+    },
+    {
       "identity" : "swift-argument-parser",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser.git",

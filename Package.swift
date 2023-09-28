@@ -11,6 +11,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.0.0"),
+        .package(url: "https://github.com/slashmo/chinchilla.git", branch: "main"),
     ],
     targets: [
         .executableTarget(
@@ -21,15 +22,23 @@ let package = Package(
             ],
             swiftSettings: swiftSettings
         ),
-        .testTarget(name: "Unit", swiftSettings: swiftSettings),
 
         .target(
             name: "ChinchillaCTLCore",
-            dependencies: [],
+            dependencies: [
+                .product(name: "Chinchilla", package: "chinchilla"),
+            ],
             swiftSettings: swiftSettings,
             plugins: [
                 .plugin(name: "GitStatusPlugin"),
             ]
+        ),
+        .testTarget(
+            name: "Unit",
+            dependencies: [
+                .target(name: "ChinchillaCTLCore"),
+            ],
+            swiftSettings: swiftSettings
         ),
 
         .plugin(

@@ -27,6 +27,6 @@ struct ChinchillaCTL: AsyncParsableCommand {
         Check out https://github.com/slashmo/chinchilla to learn more.
         """,
         version: chinchillaVersion ?? "unknown",
-        subcommands: []
+        subcommands: [Generate.self]
     )
 }
