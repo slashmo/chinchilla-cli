@@ -47,3 +47,37 @@ jobs:
 
       - name: Run Unit Tests
         run: swift test --parallel
+
+  cli-test:
+    name: CLI Test
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        swift: [latest]
+
+    steps:
+      - name: Install Swift
+        uses: vapor/swiftly-action@v0.1
+        with:
+          toolchain: ${{ matrix.swift }}
+
+      - name: Checkout
+        uses: actions/checkout@v4.1.0
+
+      - name: Cache Swift PM
+        uses: actions/cache@v3.3.2
+        with:
+          path: .build
+          key: ${{ runner.os }}-${{ matrix.swift }}-spm-${{ hashFiles('Package.swift') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.swift }}-spm-
+
+      - name: Resolve Swift dependencies
+        run: swift package resolve
+
+      - name: Build CLI
+        run: swift build -c release
+
+      - name: Print CLI version
+        run: ./.build/release/chinchilla --version
