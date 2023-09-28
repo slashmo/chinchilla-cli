@@ -94,7 +94,7 @@ let gitHasUncommittedChanges = _runGit(passing: "status", "-s", readingUpToCount
 let sourceCode: String = if !gitHasUncommittedChanges, let currentGitTag {
     """
     var _chinchillaVersion: String? {
-        \(currentGitTag)
+        "\(currentGitTag)"
     }
     """
 } else if let currentGitCommitHash {
