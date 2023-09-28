@@ -24,7 +24,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        swift: [5.8, latest]
+        swift: [latest]
 
     steps:
       - name: Install Swift
