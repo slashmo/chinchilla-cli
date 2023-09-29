@@ -13,25 +13,26 @@
 
 import Foundation
 
-public enum MigrationFileGenerator {
-    public static func generateMigrationFiles(named name: String, in folderURL: URL) throws {
-        try generateMigrationFiles(named: name, in: folderURL, currentDate: Date())
+public enum FileGenerator {
+    public static func generateMigrationFiles(named name: String, in folderURL: URL, verbose: Bool = false) throws {
+        try generateMigrationFiles(named: name, in: folderURL, currentDate: Date(), verbose: verbose)
     }
 
     static func generateMigrationFiles(
         named name: String,
         in folderURL: URL,
-        currentDate: @autoclosure () -> Date
+        currentDate: @autoclosure () -> Date,
+        verbose: Bool = false
     ) throws {
-        guard !name.isEmpty else {
-            throw MigrationFileGeneratorError.invalidMigrationName(name)
+        guard !name.isEmpty, !name.contains(".") else {
+            throw FileGeneratorError.invalidMigrationName(name)
         }
 
         let fileManager = FileManager.default
 
         var isDirectory: ObjCBool = false
         guard fileManager.fileExists(atPath: folderURL.path, isDirectory: &isDirectory), isDirectory.boolValue else {
-            throw MigrationFileGeneratorError.invalidMigrationsFolder(path: folderURL.path)
+            throw FileGeneratorError.invalidMigrationsFolder(path: folderURL.path)
         }
 
         let dateFormatter = DateFormatter()
@@ -44,11 +45,18 @@ public enum MigrationFileGenerator {
         let downURL = folderURL.appendingPathComponent("\(id)_\(name).down.sql")
 
         try "\n".write(to: upURL, atomically: false, encoding: .utf8)
+        if verbose {
+            print(#"🏭 Generated 'up' migration file at: "\#(upURL.path)"."#)
+        }
+
         try "\n".write(to: downURL, atomically: false, encoding: .utf8)
+        if verbose {
+            print(#"🏭 Generated 'down' migration file at: "\#(downURL.path)"."#)
+        }
     }
 }
 
-public enum MigrationFileGeneratorError: Error {
+public enum FileGeneratorError: Error {
     case invalidMigrationName(String)
     case invalidMigrationsFolder(path: String)
 }

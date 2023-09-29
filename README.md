@@ -11,6 +11,46 @@ You can install `chinchilla` via [`Mint`](https://github.com/yonaskolb/Mint):
 
 `mint install slashmo/chinchilla-cli@0.1.0`
 
+## Configuration
+
+Chinchilla can be configured in a couple of ways.
+> **Note**
+> Feel free to mix different configuration methods, but be aware of the
+> [order in which they apply](#configuration-value-specificity).
+
+### Explicit command arguments
+
+Most configuration options can be set directly via CLI arguments. Check out the `--help` text of the command you wish
+to run to see the available arguments.
+
+### Environment variables
+
+Configuration options may also be passed via environment variables. This is the recommended way to pass sensitive
+information such as your database password.
+
+### YAML configuration file
+
+Chinchilla supports file-based configuration in YAML. By default, all commands read `chinchilla.yml` within your
+current directory. If this file doesn't exist, Chinchilla falls back to other configuration methods. You may also use
+a YAML file at a different location by passing the `-c`/`--config` flag to `chinchilla`.
+
+#### Example file
+
+```yml
+version: 1.0
+migrations_path: /path/to/migrations
+```
+
+### Configuration Value Specificity
+
+Configuration values are determined in the following order:
+
+1. Use the CLI argument, if set
+2. Use the environment variable, if set
+3. Use the value specified in the config file, if set
+4. Fall back to a sensible default if possible
+5. If no fall-back exists, fail execution
+
 ## Migration files
 
 Chinchilla uses plain SQL files to define database migrations in both directions.
@@ -35,9 +75,4 @@ For example, an "up" file may create a new table whereas its corresponding "down
 chinchilla generate create_users_table
 ```
 
-This command creates two files, one for "up" and one for "down". By default, the files are written to a `migrations`
-folder in the current working directory. Pass the `-f` flag if you wish to customize this location:
-
-```sh
-chinchilla generate -f path/to/migrations create_users_table
-```
+This command creates two files, one for "up" and one for "down".

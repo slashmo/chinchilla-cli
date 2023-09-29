@@ -13,7 +13,7 @@
 
 import ArgumentParser
 import ChinchillaCTLCore
-import struct Foundation.URL
+import Foundation
 
 struct Generate: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
@@ -26,21 +26,18 @@ struct Generate: AsyncParsableCommand {
         """
     )
 
-    @Option(name: .customShort("f")) private var folderPath: String = "./migrations"
+    @OptionGroup private var options: GlobalOptions
+
     @Argument private var name: String
 
     func run() async throws {
-        try MigrationFileGenerator.generateMigrationFiles(named: name, in: URL(fileURLWithPath: folderPath))
-    }
-}
+        let fileConfig = try FileConfigLoader.fileConfig(explicitPath: options.fileConfigPath, verbose: options.verbose)
+        let migrationsFolderURL = ConfigValueResolver.migrationsFolderURL(
+            explicitValue: options.migrationsFolderPath,
+            fileConfig: fileConfig,
+            verbose: options.verbose
+        )
 
-extension MigrationFileGeneratorError: CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case .invalidMigrationName(let name):
-            #"The given migration name "\#(name)" is invalid. Migration names must not be empty."#
-        case .invalidMigrationsFolder(let path):
-            #"Cannot find migrations folder at "\#(path)". Please make sure it exists or change the path using "-f"."#
-        }
+        try FileGenerator.generateMigrationFiles(named: name, in: migrationsFolderURL, verbose: options.verbose)
     }
 }

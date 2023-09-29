@@ -85,5 +85,5 @@ jobs:
       - name: Generate migration files
         run: |
           mkdir ${{ runner.temp }}/migrations
-          ./.build/release/chinchilla generate -f ${{ runner.temp }}/migrations cli_test
+          ./.build/release/chinchilla generate -m ${{ runner.temp }}/migrations --verbose cli_test
           ls -lah ${{ runner.temp }}/migrations

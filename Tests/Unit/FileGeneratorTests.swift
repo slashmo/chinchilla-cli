@@ -14,7 +14,7 @@
 @testable import ChinchillaCTLCore
 import XCTest
 
-final class MigrationFileGeneratorTests: XCTestCase {
+final class FileGeneratorTests: XCTestCase {
     private var migrationsFolderURL: URL!
 
     override func setUp() async throws {
@@ -30,7 +30,7 @@ final class MigrationFileGeneratorTests: XCTestCase {
         let date = Date(timeIntervalSince1970: 1_695_928_506)
 
         XCTAssertNoThrow(
-            try MigrationFileGenerator.generateMigrationFiles(named: "test", in: migrationsFolderURL, currentDate: date)
+            try FileGenerator.generateMigrationFiles(named: "test", in: migrationsFolderURL, currentDate: date)
         )
 
         let upFileURL = migrationsFolderURL.appendingPathComponent("20230928191506_test.up.sql")
@@ -42,7 +42,7 @@ final class MigrationFileGeneratorTests: XCTestCase {
         let date = Date(timeIntervalSince1970: 1_695_928_506)
 
         XCTAssertNoThrow(
-            try MigrationFileGenerator.generateMigrationFiles(named: "test", in: migrationsFolderURL, currentDate: date)
+            try FileGenerator.generateMigrationFiles(named: "test", in: migrationsFolderURL, currentDate: date)
         )
 
         let downFileURL = migrationsFolderURL.appendingPathComponent("20230928191506_test.down.sql")
@@ -51,7 +51,7 @@ final class MigrationFileGeneratorTests: XCTestCase {
     }
 
     func test_generateMigrationFiles_withCurrentDate_generatesUpFile() throws {
-        XCTAssertNoThrow(try MigrationFileGenerator.generateMigrationFiles(named: "test", in: migrationsFolderURL))
+        XCTAssertNoThrow(try FileGenerator.generateMigrationFiles(named: "test", in: migrationsFolderURL))
 
         let migrationFileURLs = try FileManager.default.contentsOfDirectory(
             at: migrationsFolderURL,
@@ -63,7 +63,7 @@ final class MigrationFileGeneratorTests: XCTestCase {
     }
 
     func test_generateMigrationFiles_withCurrentDate_generatesDownFile() throws {
-        XCTAssertNoThrow(try MigrationFileGenerator.generateMigrationFiles(named: "test", in: migrationsFolderURL))
+        XCTAssertNoThrow(try FileGenerator.generateMigrationFiles(named: "test", in: migrationsFolderURL))
 
         let migrationFileURLs = try FileManager.default.contentsOfDirectory(
             at: migrationsFolderURL,
@@ -76,15 +76,15 @@ final class MigrationFileGeneratorTests: XCTestCase {
 
     func test_generateMigrationFiles_withEmptyName_throwsError() throws {
         do {
-            try MigrationFileGenerator.generateMigrationFiles(named: "", in: migrationsFolderURL)
-        } catch MigrationFileGeneratorError.invalidMigrationName("") {}
+            try FileGenerator.generateMigrationFiles(named: "", in: migrationsFolderURL)
+        } catch FileGeneratorError.invalidMigrationName("") {}
     }
 
     func test_generateMigrationFiles_withNonExistingFolderURL_throwsError() throws {
         let migrationsFolderURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
 
         do {
-            try MigrationFileGenerator.generateMigrationFiles(named: "test", in: migrationsFolderURL)
-        } catch MigrationFileGeneratorError.invalidMigrationsFolder(path: migrationsFolderURL.path) {}
+            try FileGenerator.generateMigrationFiles(named: "test", in: migrationsFolderURL)
+        } catch FileGeneratorError.invalidMigrationsFolder(path: migrationsFolderURL.path) {}
     }
 }
