@@ -11,7 +11,9 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-log.git", from: "1.0.0"),
         .package(url: "https://github.com/jpsim/Yams.git", from: "5.0.6"),
+
         .package(url: "https://github.com/slashmo/chinchilla.git", branch: "main"),
     ],
     targets: [
@@ -19,7 +21,26 @@ let package = Package(
             name: "ChinchillaCTL",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
+                .product(name: "Logging", package: "swift-log"),
+
+                .target(name: "ChinchillaConfig"),
                 .target(name: "ChinchillaCTLCore"),
+            ],
+            swiftSettings: swiftSettings
+        ),
+
+        .target(
+            name: "ChinchillaConfig",
+            dependencies: [
+                .product(name: "Logging", package: "swift-log"),
+                .product(name: "Yams", package: "Yams"),
+            ],
+            swiftSettings: swiftSettings
+        ),
+        .testTarget(
+            name: "ChinchillaConfigTests",
+            dependencies: [
+                .target(name: "ChinchillaConfig"),
             ],
             swiftSettings: swiftSettings
         ),
@@ -27,7 +48,7 @@ let package = Package(
         .target(
             name: "ChinchillaCTLCore",
             dependencies: [
-                .product(name: "Yams", package: "Yams"),
+                .target(name: "ChinchillaConfig"),
                 .product(name: "Chinchilla", package: "chinchilla"),
             ],
             swiftSettings: swiftSettings,

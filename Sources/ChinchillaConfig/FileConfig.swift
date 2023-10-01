@@ -23,15 +23,18 @@ public enum FileConfig: Codable, Hashable {
                 self = try .v1(V1(from: decoder))
             }
         } catch {
-            throw try FileConfigError.unsupportedVersion(
-                version: container.decode(String.self, forKey: .version),
-                supportedVersions: Version.allCases.map(\.rawValue)
+            throw try FileConfigDecodingError.unsupportedVersion(
+                version: container.decode(String.self, forKey: .version)
             )
         }
     }
 
     public struct V1: Codable, Hashable {
         public let migrationsFolderPath: String?
+
+        public init(migrationsFolderPath: String?) {
+            self.migrationsFolderPath = migrationsFolderPath
+        }
 
         private enum CodingKeys: String, CodingKey {
             case migrationsFolderPath = "migrations_path"
@@ -45,4 +48,8 @@ public enum FileConfig: Codable, Hashable {
     private enum VersionCodingKeys: String, CodingKey {
         case version
     }
+}
+
+enum FileConfigDecodingError: Error, Equatable {
+    case unsupportedVersion(version: String)
 }

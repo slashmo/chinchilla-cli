@@ -12,8 +12,10 @@
 //===----------------------------------------------------------------------===//
 
 import ArgumentParser
+import ChinchillaConfig
 import ChinchillaCTLCore
 import Foundation
+import Logging
 
 struct Generate: AsyncParsableCommand {
     static let configuration = CommandConfiguration(
@@ -31,13 +33,17 @@ struct Generate: AsyncParsableCommand {
     @Argument private var name: String
 
     func run() async throws {
-        let fileConfig = try FileConfigLoader.fileConfig(explicitPath: options.fileConfigPath, verbose: options.verbose)
-        let migrationsFolderURL = ConfigValueResolver.migrationsFolderURL(
-            explicitValue: options.migrationsFolderPath,
+        let environment = ProcessInfo.processInfo.environment
+        let logger = LoggingSystem.bootstrappedLogger(options: options, environment: environment)
+
+        let fileConfig = try FileConfigLoader.fileConfig(explicitPath: options.fileConfigPath, logger: logger)
+        let migrationsFolderURL = try ConfigValueResolver.migrationsFolderURL(
+            explicitPath: options.migrationsFolderPath,
+            environment: environment,
             fileConfig: fileConfig,
-            verbose: options.verbose
+            logger: logger
         )
 
-        try FileGenerator.generateMigrationFiles(named: name, in: migrationsFolderURL, verbose: options.verbose)
+        try FileGenerator.generateMigrationFiles(named: name, in: migrationsFolderURL, logger: logger)
     }
 }

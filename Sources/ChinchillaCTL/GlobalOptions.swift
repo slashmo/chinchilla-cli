@@ -13,12 +13,18 @@
 
 import ArgumentParser
 import ChinchillaCTLCore
+import Logging
 
 struct GlobalOptions: ParsableArguments {
-    @Flag(
-        name: [.short, .long],
-        help: ArgumentHelp(discussion: "If set, Chinchilla logs a more detailed output.")
-    ) var verbose: Bool = false
+    @Option(
+        name: [.customShort("l"), .customLong("log")],
+        help: ArgumentHelp(
+            discussion: """
+            The minimum log level. Overrides the environment variable `LOG_LEVEL`.
+            Defaults to `.info` if neither are present.
+            """
+        )
+    ) var logLevel: Logger.Level?
 
     @Option(
         name: [.customShort("c"), .customLong("config")],

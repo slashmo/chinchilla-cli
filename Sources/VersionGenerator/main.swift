@@ -91,7 +91,13 @@ let gitHasUncommittedChanges = _runGit(passing: "status", "-s", readingUpToCount
 // use the tag.
 // Otherwise, use the commit hash (with a "there are changes" marker if needed.)
 // Finally, fall back to nil if nothing else is available.
-let sourceCode: String = if !gitHasUncommittedChanges, let currentGitTag {
+let sourceCode: String = if let versionString = ProcessInfo.processInfo.environment["CHINCHILLA_VERSION"] {
+    """
+    var _chinchillaVersion: String? {
+        "\(versionString)"
+    }
+    """
+} else if !gitHasUncommittedChanges, let currentGitTag {
     """
     var _chinchillaVersion: String? {
         "\(currentGitTag)"

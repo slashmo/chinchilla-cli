@@ -12,30 +12,40 @@
 //===----------------------------------------------------------------------===//
 
 import Foundation
+import Logging
 
 public enum FileConfigLoader {
-    public static func fileConfig(explicitPath: String?, verbose: Bool) throws -> FileConfig? {
-        if let explicitPath {
-            if verbose {
-                print(#"📄 Using configuration file: "\#(explicitPath)"."#)
+    public static func fileConfig(explicitPath: String?, logger: Logger) throws -> FileConfig? {
+        if let configFilePath = configFilePath(explicitPath: explicitPath) {
+            do {
+                let contents = try String(contentsOfFile: configFilePath)
+                let config = try FileConfigParser.config(from: contents, logger: logger)
+                logger.info("Loaded configuration file.", metadata: ["path": "\(configFilePath)"])
+                return config
+            } catch {
+                logger.critical("Failed to load configuration file.")
+                throw error
             }
+        }
 
-            return try FileConfigParser.config(at: explicitPath)
+        logger.info("No configuration file found.")
+        return nil
+    }
+
+    private static func configFilePath(explicitPath: String?) -> String? {
+        if let explicitPath {
+            return explicitPath
         }
 
         // use config file at default location if it exists
-        let defaultConfigFilePath = defaultConfigFilePath()
+        let defaultConfigFilePath = Self.defaultConfigFilePath()
 
         var isDirectory: ObjCBool = false
         if fileManager.fileExists(atPath: defaultConfigFilePath, isDirectory: &isDirectory), !isDirectory.boolValue {
-            print(#"📄 Using configuration file: "\#(defaultConfigFilePath)"."#)
-            return try FileConfigParser.config(at: defaultConfigFilePath)
-        } else {
-            if verbose {
-                print("📄 No configuration file found.")
-            }
-            return nil
+            return defaultConfigFilePath
         }
+
+        return nil
     }
 
     private static func defaultConfigFilePath() -> String {
