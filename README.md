@@ -9,8 +9,26 @@ A CLI for generating SQL-based database migration files and applying/rolling-bac
 
 You can install `chinchilla` via [`Mint`](https://github.com/yonaskolb/Mint):
 
-```
+```sh
 mint install slashmo/chinchilla-cli@main
+```
+
+### From source 🏭
+
+You can also build `chinchilla` directly from source:
+
+1. Clone this repository
+2. Open the repository folder in your Terminal
+3. Use `swift` to compile the project:
+
+```sh
+swift build -c release
+```
+
+4. Invoke `chinchilla`:
+
+```sh
+./.build/release/chinchilla --help
 ```
 
 ## Configuration
