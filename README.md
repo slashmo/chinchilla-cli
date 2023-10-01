@@ -9,7 +9,9 @@ A CLI for generating SQL-based database migration files and applying/rolling-bac
 
 You can install `chinchilla` via [`Mint`](https://github.com/yonaskolb/Mint):
 
-`mint install slashmo/chinchilla-cli@0.1.0`
+```
+mint install slashmo/chinchilla-cli@main
+```
 
 ## Configuration
 
