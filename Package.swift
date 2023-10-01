@@ -7,7 +7,7 @@ let package = Package(
     name: "chinchilla-cli",
     platforms: [.macOS(.v13)],
     products: [
-        .executable(name: "chinchilla", targets: ["CTL"]),
+        .executable(name: "chinchilla", targets: ["ChinchillaCTL"]),
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.0.0"),
@@ -16,7 +16,7 @@ let package = Package(
     ],
     targets: [
         .executableTarget(
-            name: "CTL",
+            name: "ChinchillaCTL",
             dependencies: [
                 .product(name: "ArgumentParser", package: "swift-argument-parser"),
                 .target(name: "ChinchillaCTLCore"),
@@ -32,7 +32,7 @@ let package = Package(
             ],
             swiftSettings: swiftSettings,
             plugins: [
-                .plugin(name: "GitStatusPlugin"),
+                .plugin(name: "VersionGeneratorPlugin"),
             ]
         ),
         .testTarget(
@@ -44,10 +44,10 @@ let package = Package(
         ),
 
         .plugin(
-            name: "GitStatusPlugin",
+            name: "VersionGeneratorPlugin",
             capability: .buildTool,
-            dependencies: ["GitStatus"]
+            dependencies: ["VersionGenerator"]
         ),
-        .executableTarget(name: "GitStatus"),
+        .executableTarget(name: "VersionGenerator"),
     ]
 )

@@ -24,7 +24,7 @@
 import PackagePlugin
 
 @main
-struct GitStatus: BuildToolPlugin {
+struct VersionGeneratorPlugin: BuildToolPlugin {
     func createBuildCommands(context: PluginContext, target: Target) throws -> [Command] {
         #if os(Windows)
         /// BUG: Build plugins do not currently run on Windows.
@@ -36,7 +36,7 @@ struct GitStatus: BuildToolPlugin {
         return try [
             .buildCommand(
                 displayName: "Getting package repository state",
-                executable: context.tool(named: "GitStatus").path,
+                executable: context.tool(named: "VersionGenerator").path,
                 arguments: [repoPath, generatedSourcePath],
                 outputFiles: [generatedSourcePath]
             ),
