@@ -71,6 +71,24 @@ func _runGit(passing arguments: String..., readingUpToCount maxOutputCount: Int)
     #endif
 }
 
+func _writeFile(sourceCode: String) throws {
+    // Write the generated Swift file to the specified destination path.
+    try String(describing: sourceCode).write(to: generatedSourceURL, atomically: false, encoding: .utf8)
+}
+
+let sourceCode: String
+
+if let versionString = ProcessInfo.processInfo.environment["CHINCHILLA_VERSION"] {
+    sourceCode = """
+    var _chinchillaVersion: String? {
+        "\(versionString)"
+    }
+    """
+
+    try _writeFile(sourceCode: sourceCode)
+    exit(0)
+}
+
 // The current Git tag, if available.
 let currentGitTag = _runGit(passing: "describe", "--exact-match", "--tags", readingUpToCount: 40)?
     .split(whereSeparator: \.isNewline)
@@ -91,39 +109,32 @@ let gitHasUncommittedChanges = _runGit(passing: "status", "-s", readingUpToCount
 // use the tag.
 // Otherwise, use the commit hash (with a "there are changes" marker if needed.)
 // Finally, fall back to nil if nothing else is available.
-let sourceCode: String = if let versionString = ProcessInfo.processInfo.environment["CHINCHILLA_VERSION"] {
-    """
-    var _chinchillaVersion: String? {
-        "\(versionString)"
-    }
-    """
-} else if !gitHasUncommittedChanges, let currentGitTag {
-    """
+if !gitHasUncommittedChanges, let currentGitTag {
+    sourceCode = """
     var _chinchillaVersion: String? {
         "\(currentGitTag)"
     }
     """
 } else if let currentGitCommitHash {
     if gitHasUncommittedChanges {
-        """
+        sourceCode = """
         var _chinchillaVersion: String? {
             "\(currentGitCommitHash)" + " (modified)"
         }
         """
     } else {
-        """
+        sourceCode = """
         var _chinchillaVersion: String? {
             "\(currentGitCommitHash)"
         }
         """
     }
 } else {
-    """
+    sourceCode = """
     var _chinchillaVersion: String? {
         nil
     }
     """
 }
 
-// Write the generated Swift file to the specified destination path.
-try String(describing: sourceCode).write(to: generatedSourceURL, atomically: false, encoding: .utf8)
+try _writeFile(sourceCode: sourceCode)
