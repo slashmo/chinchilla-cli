@@ -26,7 +26,6 @@ struct ChinchillaCTL: AsyncParsableCommand {
         Chinchilla may also be used as a library to embed performing migrations into your Swift projects. \
         Check out https://github.com/slashmo/chinchilla to learn more.
         """,
-        version: chinchillaVersion ?? "unknown",
         subcommands: [Generate.self]
     )
 }

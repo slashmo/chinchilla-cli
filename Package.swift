@@ -51,10 +51,7 @@ let package = Package(
                 .target(name: "ChinchillaConfig"),
                 .product(name: "Chinchilla", package: "chinchilla"),
             ],
-            swiftSettings: swiftSettings,
-            plugins: [
-                .plugin(name: "VersionGeneratorPlugin"),
-            ]
+            swiftSettings: swiftSettings
         ),
         .testTarget(
             name: "Unit",
@@ -63,12 +60,5 @@ let package = Package(
             ],
             swiftSettings: swiftSettings
         ),
-
-        .plugin(
-            name: "VersionGeneratorPlugin",
-            capability: .buildTool,
-            dependencies: ["VersionGenerator"]
-        ),
-        .executableTarget(name: "VersionGenerator"),
     ]
 )
